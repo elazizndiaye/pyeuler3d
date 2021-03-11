@@ -1,6 +1,7 @@
 from pathlib import Path
-from pye3d import optPath
-from pye3d.config import config
+from pyeuler3d import optPath
+from pyeuler3d.config import config
+import tempfile
 import subprocess
 
 """
@@ -35,5 +36,18 @@ class E3Dbin:
     def callPRE(self, config: config, logPath: optPath = None):
         if logPath:
             logPath = Path(logPath)
+            with logPath.open() as file:
+                subprocess.run(
+                    [str(self.prePath)],
+                )
 
-        subprocess.run([str(self.prePath)])
+    def _runSim(self, exec: str, config: config, logPath: optPath):
+        if not logPath:
+            logFile = tempfile.NamedTemporaryFile(delete=False)
+        else:
+            logPath = Path(logPath)
+            logFile = logPath.open()
+
+        configPath = ""
+        with logFile as file:
+            subprocess.run([exec, configPath], check=True, stdout=file)
