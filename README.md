@@ -1,6 +1,6 @@
-# pye3d
+# pyeuler3d
 
-Python package interfacing with the ***awesome*** [E3D CFD software](https://github.com/AER8875-Projet-integrateur-IV/Euler3D)
+Python package interfacing with the ***awesome*** [Euler3D CFD software](https://github.com/AER8875-Projet-integrateur-IV/Euler3D)
 
 ## Use
 
@@ -17,7 +17,7 @@ Python package interfacing with the ***awesome*** [E3D CFD software](https://git
 ```
     $   pipenv  shell
 ```
-
+v
 3. Sync your environment    (every time you work on the package)
 
 ```
