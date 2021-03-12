@@ -11,12 +11,12 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: install jupyter
-      run: >-
-        python -m
-        pip install
-        jupyter
-        --user
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8' 
+
+    - name: Install jupyter
+      run : python -m pip install --upgrade nbconvert
 
     - name: convert to markdown
       run: jupyter nbconvert README.ipynb --to markdown
