@@ -4,13 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-black = "*"
 pytecplot = "*"
+numpy = "*"
+tk = "*"
+jupyter = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
 
 [packages.e1839a8]
 path = "."

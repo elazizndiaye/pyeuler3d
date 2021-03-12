@@ -118,9 +118,10 @@ class config:
         else:
             self.PRE_LOG = Path(PRE_LOG)
 
-    def write2file(self, path: Path) -> Path:
+    def write2file(self, path: Union[Path,str]) -> Path:
+        path = Path(path)
         now = datetime.now()
-        with path.open() as file:
+        with path.open("w") as file:
             file.write(
                 _fileTemplate.format(
                     author="pyeuler3d, you're favorite config file generator!",
