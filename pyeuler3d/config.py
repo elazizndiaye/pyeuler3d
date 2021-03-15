@@ -1,5 +1,5 @@
 import tempfile
-from typing import Union, Literal
+from typing import Iterable, Tuple, Union, Literal
 from pathlib import Path
 from datetime import datetime
 from pyeuler3d import optPath
@@ -12,17 +12,17 @@ MESH_TYPE_UNSTRUCT = "UNSTRUCTURED"
 MESH_TYPE_STRUCT = "STRUCTURED"
 
 # Speed options
-SPD_OPTION_MACH = "MACH"
-SPD_OPTION_VELOCITY = "VELOCITY"
+SPD_OPTION_MACH = 0
+SPD_OPTION_VELOCITY = 1
 
 # schemes
-SCHEME_ROE = "ROE"
-SCHEME_AVERAGE = "AVERAGE"
-SCHEME_AUSM = "AUSM"
+SCHEME_ROE = 0
+SCHEME_AVERAGE = "AVERAGE SCHEME UNIMPLEMENTED"
+SCHEME_AUSM = 1
 
 # time scheme
-SCHEME_TIME_EULER_EXPLICIT = "EXPLICIT_EULER"
-SCHEME_TIME_RK5 = "RK5"
+SCHEME_TIME_EULER_EXPLICIT = 0
+SCHEME_TIME_RK5 = 2
 
 # output formats
 OUTPUT_FORMAT_TECPLOT = "Tecplot"
@@ -57,8 +57,11 @@ class config:
         SOLVER_LOG: optPath = None,
         OUTPUT_FILE: optPath = None,
         POST_LOG: optPath = None,
+        MESH_ORIENTATION_CL: Literal[0,1,2,3,4,5] = 0,
+        MESH_ORIENTATION_CD: Literal[0,1,2,3,4,5] = 0,
+        MESH_REF_POINT: Tuple[float,float,float] = (0.,0.,0.),
+        SAMPLING: int = 500
     ) -> None:
-
         # ---------------- necessary inputs ----------------
 
         # Mesh options
@@ -83,7 +86,10 @@ class config:
         self.CFL = CFL
         self.MIN_RESIDUAL = MIN_RESIDUAL
         self.MAX_ITER = MAX_ITER
-
+        self.MESH_REF_POINT=MESH_REF_POINT
+        self.MESH_ORIENTATION_CL=MESH_ORIENTATION_CL
+        self.MESH_ORIENTATION_CD=MESH_ORIENTATION_CD
+        self.SAMPLING = SAMPLING
         # optional paths
         tempDir = Path(tempfile.mkdtemp())
 
@@ -150,6 +156,12 @@ class config:
                     SOLVER_LOG=self.SOLVER_LOG,
                     OUTPUT_FILE=self.OUTPUT_FILE,
                     POST_LOG=self.POST_LOG,
+                    MESH_REF_POINT_X=self.MESH_REF_POINT[0],
+                    MESH_REF_POINT_Y=self.MESH_REF_POINT[1],
+                    MESH_REF_POINT_Z=self.MESH_REF_POINT[2],
+                    MESH_ORIENTATION_CL=self.MESH_ORIENTATION_CL,
+                    MESH_ORIENTATION_CD=self.MESH_ORIENTATION_CD,
+                    SAMPLING=self.SAMPLING
                 )
             )
         return Path("yoouupi")
@@ -177,6 +189,24 @@ PARTITION_FILES= {PARTITION_FILES}
 PRE_LOG= {PRE_LOG}
 
 ------------------- SIMULATION CONTROL -------------------
+# Mesh orientation, this will be used during the coefficient calculations
+# Options : 0 ->  X axis
+#           1 -> -X axis
+#           2 ->  Y axis
+#           3 -> -Y axis
+#           4 ->  Z axis
+#           5 -> -Z axis
+MESH_ORIENTATION_CL= {MESH_ORIENTATION_CL}
+MESH_ORIENTATION_CD= {MESH_ORIENTATION_CD}
+
+# Reference point, this will be used for the aerodynamic coefficient calculations
+MESH_REF_POINT_X= {MESH_REF_POINT_X}
+MESH_REF_POINT_Y= {MESH_REF_POINT_Y}
+MESH_REF_POINT_Z= {MESH_REF_POINT_Z}
+
+# Sampling period, number of iterations between sampling
+SAMPLING= {SAMPLING}
+
 # Type of speed. Unchosen field will be ignored.
 # Options : MACH -> 0
 #           Velocity -> 1
@@ -235,6 +265,7 @@ SOLVER_LOG= {SOLVER_LOG}
 
 -------------------- POST-PROCESSING CONTROL ----------------
 # Path to file output, from executable directory
+# residuals.txt and overview.txt will also be outputted in this directory
 OUTPUT_FILE= {OUTPUT_FILE}
 
 # Path to log file for post-processor
