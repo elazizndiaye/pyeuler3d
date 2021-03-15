@@ -4,13 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytecplot = "*"
-numpy = "*"
-tk = "*"
 jupyter = "*"
-pandas = "*"
 e1839a8 = {path = ".", editable = true}
-pillow = "*"
 
 [dev-packages]
 
